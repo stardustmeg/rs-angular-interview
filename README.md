@@ -129,6 +129,8 @@ Angular CLI is published on npm as the @angular/cli package and includes a binar
 
 In Angular, a module is a cohesive block of code dedicated to an application domain, a workflow, or a closely related set of capabilities. An Angular module is defined using the `@NgModule` decorator, which provides metadata that tells Angular how to compile and launch the application.
 
+Angular code that predates standalone components uses [NgModule](https://angular.dev/guide/components/importing#ngmodules) as a mechanism for importing and using other components. See the full [NgModule guide](https://angular.dev/guide/ngmodules) for details.
+
 #### Role of a Module in an Angular Application:
 
 - Organization:
@@ -273,7 +275,7 @@ export class ParentComponent {
 }
 ```
 
-#### 2. Services with Observables:
+#### 2. Services with `Observables`:
 
 Services can be used as a central place to share data between components, especially when the components are not directly related.
 
@@ -334,7 +336,7 @@ export class ComponentB implements OnInit {
 }
 ```
 
-#### 3. ViewChild and ContentChild Decorators:
+#### 3. `ViewChild` and `ContentChild` Decorators:
 
 These decorators allow a parent component to access a child component's properties and methods directly.
 
@@ -398,7 +400,7 @@ export class ParentComponent implements AfterContentInit {
 }
 ```
 
-#### 4. RxJS Subjects:
+#### 4. RxJS `Subjects`:
 
 Subjects are a type of `Observable` that can multicast to multiple observers. They can be used for broadcasting data to multiple components.
 
@@ -448,7 +450,7 @@ export class ComponentB implements OnInit {
 }
 ```
 
-#### 5. Signals:
+#### 5. `Signals`:
 
 Signals in Angular can be used to create reactive state objects that emit new values when the state changes. This can be very useful for sharing data between components.
 
@@ -520,52 +522,885 @@ export class ComponentB implements OnInit {
 ## Components:
 
 <details>
-<summary>1. What are `Components` in Angular, and how are they the foundation of an application structure?</summary>
+<summary>1. What are Components in Angular, and how are they the foundation of an application structure?</summary>
+
+[Components](https://angular.dev/essentials/components) in Angular are the fundamental building blocks of an Angular application. Each component encapsulates a portion of the user interface (UI) and its associated logic, making the application modular and easier to manage.
+
+Components provide structure for organizing your project into easy-to-understand parts with clear responsibilities so that your code is maintainable and scalable.
+
+#### How Components Form the Foundation of an Angular Application
+
+- Modularity:
+
+Components break down the application into smaller, manageable, and reusable pieces, making the codebase easier to understand and maintain.
+
+- Reusability:
+
+Once created, a component can be reused across various parts of the application or even in different applications.
+
+- Separation of Concerns:
+
+Components maintain a clear separation between the UI and the logic, promoting cleaner and more organized code.
+
+- Encapsulation:
+
+Each component encapsulates its logic, template, and styles, ensuring that changes in one component do not affect others.
+
+- Composability:
+
+Components can be nested within other components, allowing complex UIs to be composed from simpler building blocks.
 
 </details>
 
 <details>
-<summary>2. How do you configure a component's selector, template, and style using the `@Component` decorator?</summary>
+<summary>2. How do you configure a component's selector, template, and style using the @Component decorator?</summary>
+
+#### Defining a Component
+
+Every component has the following core and some of the recommended or necessary properties:
+
+- Decorator!:
+
+A [@Component decorator](https://www.typescriptlang.org/docs/handbook/decorators.html) that contains some configuration and provides metadata about the component.
+
+- Selector!:
+
+A [CSS selector](https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/Selectors) that defines how the component is used in HTML. It is used to insert the component's template into the parent template.
+
+- Template!:
+
+  - The HTML part of the component, defining what the component should render.
+  - Can be defined inline using the template property or in an external HTML file using the `templateUrl` property.
+
+- Class!:
+
+A TypeScript class where you define the logic and data for the component. It contains properties and methods that can be used in the component's template.
+
+- Styles?:
+
+  - A string or array of strings that contains any CSS styles you want applied to the component.
+  - Can be defined inline using the styles property or in an external stylesheet using the `styleUrl` property.
+
+- Standalone?: true
+
+The recommended approach of streamlining the authoring experience of components.
+
+- ChangeDetection?: ChangeDetectionStrategy.OnPush
+
+The recommended approach of determining when the component should be re-rendered.
+
+- Imports?: []
+
+The necessary imports for the component.
+
+- Providers?: []
+
+The necessary providers for the component.
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-example', // The selector used in HTML to include this component
+  templateUrl: './example.component.html', // Path to the component's template
+  styleUrls: ['./example.component.css'], // Path to the component's styles
+})
+export class ExampleComponent {
+  title: string = 'Hello, Angular';
+
+  // Method to change title
+  changeTitle(newTitle: string) {
+    this.title = newTitle;
+  }
+}
+```
+
+```html
+<div>
+  <h1>{{ title }}</h1>
+  <button (click)="changeTitle('Title Changed')">Change Title</button>
+</div>
+```
+
+```css
+h1 {
+  color: blue;
+}
+button {
+  margin-top: 10px;
+}
+```
 
 </details>
 
 <details>
 <summary>3. How would you explain the component lifecycle and its main methods (e.g., ngOnInit, ngOnChanges, ngOnDestroy)?</summary>
 
+Angular components have a [lifecycle](https://angular.dev/guide/components/lifecycle) managed by Angular, which includes various stages from creation to destruction. Understanding these stages and the corresponding lifecycle hooks allows you to hook into key moments in a component's lifecycle to perform custom logic.
+
+#### Angular Component Lifecycle Hooks
+
+- [ngOnInit](https://angular.dev/guide/components/lifecycle#ngoninit):
+
+The `ngOnInit` method runs after Angular has initialized all the components inputs with their initial values. A component's `ngOnInit` runs exactly once.
+
+This step happens before the component's own template is initialized. This means that you can update the component's state based on its initial input values.
+
+- [ngOnChanges](https://angular.dev/guide/components/lifecycle#ngonchanges):
+
+The `ngOnChanges` method runs after any component inputs have changed.
+
+This step happens before the component's own template is checked. This means that you can update the component's state based on its initial input values.
+
+**During initialization, the first `ngOnChanges` runs before `ngOnInit`.**
+
+The `ngOnChanges` method accepts one `SimpleChanges` argument. This object is a `Record` mapping each component input name to a `SimpleChange` object. Each `SimpleChange` contains the input's previous value, its current value, and a flag for whether this is the first time the input has changed.
+
+- [ngDoCheck](https://angular.dev/guide/components/lifecycle#ngdocheck):
+
+The `ngDoCheck` method runs before every time Angular checks a component's template for changes.
+
+You can use this lifecycle hook to manually check for state changes outside of Angular's normal change detection, manually updating the component's state.
+
+This method runs very frequently and can significantly impact your page's performance. Avoid defining this hook whenever possible, only using it when you have no alternative.
+
+**During initialization, the first `ngDoCheck` runs after `ngOnInit`.**
+
+- [ngAfterContentInit](https://angular.dev/guide/components/lifecycle#ngaftercontentinit):
+
+The `ngAfterContentInit` method runs once after all the children nested inside the component (its content) have been initialized.
+
+You can use this lifecycle hook to read the results of [content queries](https://angular.dev/guide/components/queries#content-queries). While you can access the initialized state of these queries, attempting to change any state in this method results in an [ExpressionChangedAfterItHasBeenCheckedError](https://angular.dev/errors/NG0100).
+
+- [ngAfterContentChecked](https://angular.dev/guide/components/lifecycle#ngaftercontentchecked):
+
+The `ngAfterContentChecked` method runs every time the children nested inside the component (its content) have been checked for changes.
+
+This method runs very frequently and can significantly impact your page's performance. Avoid defining this hook whenever possible, only using it when you have no alternative.
+
+While you can access the updated state of [content queries](https://angular.dev/guide/components/queries#content-queries) here, attempting to change any state in this method results in an [ExpressionChangedAfterItHasBeenCheckedError](https://angular.dev/errors/NG0100).
+
+- [ngAfterViewInit](https://angular.dev/guide/components/lifecycle#ngafterviewinit):
+
+The `ngAfterViewInit` method runs once after the component's view has been initialized.
+
+You can use this lifecycle hook to read the results of [view queries](https://angular.dev/guide/components/queries#view-queries). While you can access the initialized state of these queries, attempting to change any state in this method results in an [ExpressionChangedAfterItHasBeenCheckedError](https://angular.dev/errors/NG0100).
+
+- [ngAfterViewChecked](https://angular.dev/guide/components/lifecycle#ngafterviewchecked):
+
+The `ngAfterViewChecked` method runs every time the children in the component's template (its view) have been checked for changes.
+
+This method runs very frequently and can significantly impact your page's performance. Avoid defining this hook whenever possible, only using it when you have no alternative.
+
+While you can access the updated state of [view queries](https://angular.dev/guide/components/queries#view-queries) here, attempting to change any state in this method results in an [ExpressionChangedAfterItHasBeenCheckedError](https://angular.dev/errors/NG0100).
+
+- [afterRender and afterNextRender](https://angular.dev/guide/components/lifecycle#afterrender-and-afternextrender):
+
+The `afterRender` and `afterNextRender` functions let you register a **render callback** to be invoked after Angular has finished rendering _all components_ on the page into the DOM.
+
+These functions are **different** from the other lifecycle hooks. Rather than a class method, they are standalone functions that accept a callback. The execution of render callbacks are not tied to any specific component instance, but instead an application-wide hook.
+
+`afterRender` and `afterNextRender` must be called in an [injection context](https://angular.dev/guide/di/dependency-injection-context), typically a component's constructor.
+
+You can use render callbacks to perform manual DOM operations. See [Using DOM APIs](https://angular.dev/guide/components/dom-apis) for guidance on working with the DOM in Angular.
+
+Render callbacks do not run during server-side rendering or during build-time pre-rendering.
+
+- [afterRender phases](https://angular.dev/guide/components/lifecycle#afterrender-phases):
+
+When using `afterRender` or `afterNextRender`, you can optionally split the work into phases. The phase gives you control over the sequencing of DOM operations, letting you sequence _write_ operations before _read_ operations in order to minimize [layout thrashing](https://web.dev/avoid-large-complex-layouts-and-layout-thrashing). In order to communicate across phases, a phase function may return a result value that can be accessed in the next phase.
+
+##### There are four phases that run in the following order:
+
+1. `earlyRead` - Use this phase to read any layout-affecting DOM properties and styles that are strictly necessary for subsequent calculation. Avoid this phase if possible, preferring the write and read phases.
+2. `mixedReadWrite` - Default phase. Use for any operations need to both read and write layout-affecting properties and styles. Avoid this phase if possible, preferring the explicit write and read phases.
+3. `write` - Use this phase to write layout-affecting DOM properties and styles.
+4. `read` - Use this phase to read any layout-affecting DOM properties.
+
+- [ngOnDestroy](https://angular.dev/guide/components/lifecycle#ngondestroy):
+
+The ngOnDestroy method runs once just before a component is destroyed. Angular destroys a component when it is no longer shown on the page, such as being hidden by NgIf or upon navigating to another page.
+
+- [DestroyRef](https://angular.dev/guide/components/lifecycle#destroyref):
+
+You can pass the DestroyRef instance to functions or classes outside your component. Use this pattern if you have other code that should run some cleanup behavior when the component is destroyed.
+
+You can also use DestroyRef to keep setup code close to cleanup code, rather than putting all cleanup code in the ngOnDestroy method.
+
+#### Lifecycle interfaces
+
+Angular provides a TypeScript interface for each lifecycle method. You can optionally import and implement these interfaces to ensure that your implementation does not have any typos or misspellings.
+
+Each interface has the same name as the corresponding method without the `ng` prefix. For example, the interface for `ngOnInit` is `OnInit`.
+
+#### Execution order
+
+The [following diagrams](https://angular.dev/guide/components/lifecycle#execution-order) show the execution order of Angular's lifecycle hooks.
+
+[![During initialization](./img/during_init.png)](https://angular.dev/guide/components/lifecycle#during-initialization)
+
+[![Subsequent updates](./img/undates.png)](https://angular.dev/guide/components/lifecycle#subsequent-updates)
+
+#### Ordering with directives
+
+When you put one or more directives on the same element as a component, either in a template or with the `hostDirectives` property, the framework does not guarantee any ordering of a given lifecycle hook between the component and the directives on a single element. Never depend on an observed ordering, as this may change in later versions of Angular.
+
+#### Component with Lifecycle Hooks
+
+```ts
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  DoCheck,
+  AfterContentInit,
+  AfterContentChecked,
+  AfterViewInit,
+  AfterViewChecked,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
+
+@Component({
+  selector: 'app-lifecycle',
+  template: `<p>Check the console for lifecycle hooks logs.</p>`,
+})
+export class LifecycleComponent
+  implements
+    OnInit,
+    OnChanges,
+    DoCheck,
+    AfterContentInit,
+    AfterContentChecked,
+    AfterViewInit,
+    AfterViewChecked,
+    OnDestroy
+{
+  constructor() {
+    console.log('Constructor called');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('ngOnChanges called:', changes);
+  }
+
+  ngOnInit() {
+    console.log('ngOnInit called');
+  }
+
+  ngDoCheck() {
+    console.log('ngDoCheck called');
+  }
+
+  ngAfterContentInit() {
+    console.log('ngAfterContentInit called');
+  }
+
+  ngAfterContentChecked() {
+    console.log('ngAfterContentChecked called');
+  }
+
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit called');
+  }
+
+  ngAfterViewChecked() {
+    console.log('ngAfterViewChecked called');
+  }
+
+  ngOnDestroy() {
+    console.log('ngOnDestroy called');
+  }
+}
+```
+
+#### Summary
+
+- `ngOnChanges`: Invoked when input properties change.
+- `ngOnInit`: Invoked once, after the first ngOnChanges.
+- `ngDoCheck`: Invoked during every change detection run.
+- `ngAfterContentInit`: Invoked after content projection.
+- `ngAfterContentChecked`: Invoked after every check of content projection.
+- `ngAfterViewInit`: Invoked after component's view and child views initialization.
+- `ngAfterViewChecked`: Invoked after every check of component's view and child views.
+- `ngOnDestroy`: Invoked just before the component is destroyed.
+
+These lifecycle hooks provide a way to tap into key moments in a component's lifecycle, allowing you to perform custom logic at appropriate times.
+
 </details>
 
 <details>
 <summary>4. How does two-way data binding work in Angular, and how does it differ from one-way data binding?</summary>
+
+#### Two-way data binding
+
+[Two-way data binding](https://angular.dev/guide/templates/two-way-binding) in Angular allows for the synchronization of data between the model (component class) and the view (template). This means that any changes made in the view are immediately reflected in the model, and vice versa.
+
+In Angular, two-way data binding is typically achieved using the `[(ngModel)]` directive in combination with forms.
+
+```ts
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <input [(ngModel)]="name" placeholder="Enter your name" />
+    <p>Hello, {{ name }}!</p>
+  `,
+})
+export class AppComponent {
+  name: string = '';
+}
+```
+
+In this example:
+
+- `[(ngModel)]="name"` binds the input's value to the name property in the component.
+- The `name` property in the component is updated whenever the user types into the input field.
+- The `{{ name }}` interpolation in the template reflects the updated value of the name property.
+
+#### Enabling two-way binding between components
+
+Each two-way binding for components requires the following:
+
+**The child component must contain:**
+
+- An `@Input()` property
+- A corresponding `@Output()` event emitter that has the exact same name as the input property plus `"Change"` at the end. The emitter must also emit the same type as the input property.
+- A method that emits to the event emitter with the updated value of the `@Input()`.
+
+Here is a simplified example:
+
+```ts
+// './counter/counter.component.ts';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+@Component({
+  selector: 'app-counter',
+  standalone: true,
+  template: `
+    <button (click)="updateCount(-1)">-</button>
+    <span>{{ count }}</span>
+    <button (click)="updateCount(+1)">+</button>
+  `,
+})
+export class CounterComponent {
+  @Input() count: number;
+  @Output() countChange = new EventEmitter<number>();
+  updateCount(amount: number): void {
+    this.count += amount;
+    this.countChange.emit(this.count);
+  }
+}
+```
+
+**The parent component must:**
+
+- Wrap the `@Input()` property name in the two-way binding syntax.
+- Specify the corresponding property to which the updated value is assigned
+
+Here is a simplified example:
+
+```ts
+// ./app.component.ts
+import { Component } from '@angular/core';
+import { CounterComponent } from './counter/counter.component';
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CounterComponent],
+  template: `
+    <main>
+      <h1>Counter: {{ initialCount }}</h1>
+      <app-counter [(count)]="initialCount"></app-counter>
+    </main>
+  `,
+})
+export class AppComponent {
+  initialCount = 18;
+}
+```
+
+#### One-Way Data Binding in Angular
+
+One-way data binding means that data flows in a single direction, either from the model to the view or from the view to the model, but not both simultaneously.
+
+**Types of One-Way Data Binding**
+
+- **Interpolation**: Binds data from the component to the template.
+
+```html
+<p>Hello, {{ name }}!</p>
+```
+
+- **Property Binding**: Binds a property of a DOM element to a field in the component.
+
+```html
+<input [value]="name" />
+```
+
+- **Event Binding**: Binds an event in the template to a method in the component.
+
+```html
+<button (click)="updateName('John')">Set Name to John</button>
+```
+
+```ts
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <input [value]="name" (input)="name = $event.target.value" placeholder="Enter your name" />
+    <p>Hello, {{ name }}!</p>
+  `,
+})
+export class AppComponent {
+  name: string = '';
+
+  updateName(newName: string) {
+    this.name = newName;
+  }
+}
+```
+
+In this example:
+
+- `[value]="name"` binds the input's value to the name property in the component (model to view).
+- `(input)="name = $event.target.value"` updates the name property when the user types into the input field (view to model).
+
+#### Differences Between Two-Way and One-Way Data Binding
+
+- Direction of Data Flow:
+  - Two-Way Data Binding: Data flows both ways, from the model to the view and vice versa.
+  - One-Way Data Binding: Data flows in a single direction, either from the model to the view or from the view to the model.
+- Syntax:
+  - Two-Way Data Binding: Uses `[(ngModel)]` for form elements.
+  - One-Way Data Binding: Uses `[property]` for property binding and (event) for event binding.
+- Use Case:
+  - Two-Way Data Binding: Suitable for forms where user input needs to be synchronized with the model.
+  - One-Way Data Binding: Suitable for scenarios where data only needs to flow in one direction, typically for display purposes or for handling specific events.
+
+#### Summary
+
+**Two-Way Data Binding**: Synchronizes data between the model and the view using `[(ngModel)]`.
+**One-Way Data Binding**: Data flows in one direction, either from the model to the view or from the view to the model, using `[property]`, `(event)`, or `{{ interpolation }}`.
 
 </details>
 
 <details>
 <summary>5. Standalone components.</summary>
 
+A [standalone component](https://angular.dev/guide/components/importing#standalone-components) is a component that sets standalone: true in its component metadata. Standalone components directly import other components, directives, and pipes used in their templates:
+
+```ts
+@Component({
+  standalone: true,
+  selector: 'profile-photo',
+})
+export class ProfilePhoto {}
+@Component({
+  standalone: true,
+  imports: [ProfilePhoto],
+  template: `<profile-photo />`,
+})
+export class UserProfile {}
+```
+
+Standalone components are directly importable into other standalone components.
+
+**The Angular team recommends using standalone components for all new development.**
+
 </details>
 
 <details>
 <summary>6. What are ViewChild and ViewChildren?</summary>
+
+`@ViewChild` and `@ViewChildren` are Angular decorators used to query and access child components, directives, or DOM elements in a component's template. They are essential for interacting with and manipulating the DOM or component instances within the same view.
+
+#### @ViewChild
+
+The `@ViewChild` decorator is used to get a reference to a single child element, component, or directive.
+
+```ts
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  template: `
+    <app-child></app-child>
+    <button (click)="callChildMethod()">Call Child Method</button>
+  `,
+})
+export class ParentComponent implements AfterViewInit {
+  @ViewChild(ChildComponent) childComponent!: ChildComponent;
+
+  ngAfterViewInit() {
+    // Access child component properties or methods here
+    console.log(this.childComponent);
+  }
+
+  callChildMethod() {
+    this.childComponent.childMethod();
+  }
+}
+```
+
+In this example:
+
+- `@ViewChild(ChildComponent)` queries the ChildComponent instance from the template.
+- `ngAfterViewInit` lifecycle hook is used to ensure the child component is fully initialized before accessing it.
+
+#### @ViewChildren
+
+The `@ViewChildren` decorator is used to get a reference to multiple child elements, components, or directives. It returns a QueryList which provides methods to iterate or interact with the list of queried elements.
+
+```ts
+import { Component, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { ChildComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent',
+  template: `
+    <app-child></app-child>
+    <app-child></app-child>
+    <button (click)="callChildrenMethods()">Call Children Methods</button>
+  `,
+})
+export class ParentComponent implements AfterViewInit {
+  @ViewChildren(ChildComponent) childComponents!: QueryList<ChildComponent>;
+
+  ngAfterViewInit() {
+    // Access child components properties or methods here
+    this.childComponents.forEach((child) => {
+      console.log(child);
+    });
+  }
+
+  callChildrenMethods() {
+    this.childComponents.forEach((child) => {
+      child.childMethod();
+    });
+  }
+}
+```
+
+In this example:
+
+- `@ViewChildren(ChildComponent)` queries all instances of ChildComponent from the template.
+- `ngAfterViewInit` lifecycle hook is used to ensure the child components are fully initialized before accessing them.
+- The `QueryList` provides methods such as forEach to iterate over the list of child components.
+
+#### Summary
+
+- **@ViewChild**:
+
+  - Used for querying a single child element, component, or directive.
+  - Returns a reference to the queried item.
+  - Accessed after the view initialization, typically in the ngAfterViewInit lifecycle hook.
+
+- **@ViewChildren**:
+  - Used for querying multiple child elements, components, or directives.
+  - Returns a QueryList containing references to the queried items.
+  - Accessed after the view initialization, typically in the ngAfterViewInit lifecycle hook.
+
+These decorators are useful for directly interacting with child elements or components, allowing for more dynamic and interactive Angular applications.
 
 </details>
 
 <details>
 <summary>7. What is the difference between ElementRef and Renderer2?</summary>
 
+#### ElementRef
+
+**Description**
+
+- `ElementRef` is a wrapper around a native DOM element in Angular.
+- It provides direct access to the underlying DOM element.
+
+**Usage**
+
+- Typically used for simple, direct DOM manipulations.
+- Should be used with caution as it can lead to security risks if not handled properly (e.g., bypassing Angular's built-in security mechanisms against XSS attacks).
+
+```ts
+import { Component, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  template: `<div #myDiv>Hello, World!</div>`,
+})
+export class ExampleComponent implements AfterViewInit {
+  @ViewChild('myDiv') myDiv!: ElementRef;
+
+  ngAfterViewInit() {
+    this.myDiv.nativeElement.style.backgroundColor = 'yellow';
+  }
+}
+```
+
+#### Renderer2
+
+**Description**
+
+- `Renderer2` is a service provided by Angular for more secure and consistent DOM manipulation.
+- It abstracts away the direct access to the DOM, which helps in maintaining security and cross-platform compatibility (e.g., when using Angular with web workers or server-side rendering).
+
+**Usage**
+
+- Preferred for any DOM manipulations to ensure security and compatibility.
+- Provides a set of methods to perform various DOM operations (e.g., setting properties, adding classes, listening to events).
+
+```ts
+import { Component, Renderer2, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-example',
+  template: `<div #myDiv>Hello, World!</div>`,
+})
+export class ExampleComponent implements AfterViewInit {
+  @ViewChild('myDiv') myDiv!: ElementRef;
+
+  constructor(private renderer: Renderer2) {}
+
+  ngAfterViewInit() {
+    this.renderer.setStyle(this.myDiv.nativeElement, 'backgroundColor', 'yellow');
+  }
+}
+```
+
+#### Key Differences
+
+**Direct vs. Abstracted Access:**
+
+- `ElementRef`: Provides direct access to the DOM element.
+- `Renderer2`: Provides an abstracted way to interact with the DOM.
+
+**Security:**
+
+- `ElementRef`: Direct DOM manipulation can lead to security risks if not handled properly.
+- `Renderer2`: Ensures that operations are secure by abstracting the DOM manipulations.
+
+**Cross-platform Compatibility:**
+
+- `ElementRef`: Direct access might not work in non-browser environments.
+- `Renderer2`: Designed to work across different platforms, ensuring compatibility (e.g., server-side rendering).
+
+**When to Use**
+
+- `ElementRef`: Use for simple and safe DOM manipulations when you are sure about the security implications and platform constraints.
+- `Renderer2`: Use for most DOM manipulations to ensure security, maintainability, and cross-platform compatibility.
+
+#### Summary
+
+`ElementRef` is useful for quick, direct access to native elements but should be used sparingly and with caution.
+`Renderer2` provides a safer and more consistent way to interact with the DOM, making it the preferred choice for DOM manipulations in Angular.
+
 </details>
 
 <details>
 <summary>8. How do HostBinding and HostListener decorators work?</summary>
+
+[@HostBinding](https://angular.dev/api/core/HostBinding) and [@HostListener](https://angular.dev/api/core/HostListener) are Angular decorators that allow you to interact with the host element of a directive or component. These decorators are useful for modifying host element properties and listening to events on the host element.
+
+#### HostBinding
+
+**Description**
+
+- Decorator that marks a DOM property or an element class, style or attribute as a host-binding property and supplies configuration metadata.
+- Angular automatically checks host bindings during change detection, and if a binding changes it updates the host element of the directive.
+
+**Usage**
+Use `@HostBinding` to bind a class property to a host element property or attribute.
+
+```ts
+import { Directive, HostBinding } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {
+  @HostBinding('style.backgroundColor') backgroundColor: string = 'yellow';
+
+  // You can change the value of backgroundColor dynamically as needed
+  changeColor(color: string) {
+    this.backgroundColor = color;
+  }
+}
+```
+
+In this example:
+
+- The `@HostBinding('style.backgroundColor')` binds the backgroundColor property of the directive to the background-color style of the host element.
+- The background color of the host element will be set to yellow initially and can be changed dynamically by calling the changeColor method.
+
+#### HostListener
+
+**Description**
+
+- `@HostListener` listens to events on the host element and triggers a specified method in the directive/component class.
+- Angular invokes the supplied handler method when the host element emits the specified event, and updates the bound element with the result.
+- It allows you to handle events occurring on the host element.
+- If the handler method returns false, applies preventDefault on the bound element.
+  **Usage**
+- Use `@HostListener` to listen to events like click, mouseover, etc., on the host element.
+
+```ts
+import { Directive, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appClick]',
+})
+export class ClickDirective {
+  @HostListener('click', ['$event']) onClick(event: Event) {
+    console.log('Host element clicked!', event);
+  }
+
+  @HostListener('mouseenter') onMouseEnter() {
+    console.log('Mouse entered host element!');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    console.log('Mouse left host element!');
+  }
+}
+```
+
+In this example:
+
+- The `@HostListener('click', ['$event'])` listens to the click event on the host element and triggers the onClick method.
+- The `@HostListener('mouseenter')` listens to the mouseenter event on the host element and triggers the onMouseEnter method.
+- The `@HostListener('mouseleave')` listens to the mouseleave event on the host element and triggers the onMouseLeave method.
+
+#### Key Differences
+
+**@HostBinding:**
+
+- Binds a class property to a host element property or attribute.
+- Useful for dynamically setting properties or attributes on the host element.
+
+**@HostListener:**
+
+- Listens to events on the host element and triggers a specified method.
+- Useful for handling events occurring on the host element.
+
+#### Summary
+
+`@HostBinding` and `@HostListener` are powerful decorators for interacting with the host element of a directive or component.
+`@HostBinding`: Use to bind class properties to host element properties or attributes.
+`@HostListener`: Use to listen to events on the host element and trigger methods in the directive/component class.
 
 </details>
 
 <details>
 <summary>9. What is the change detection mechanism in Angular, and how do the Default and OnPush strategies differ? When is it better to use each one?</summary>
 
+Angular's change detection mechanism involves checking the component tree to see if any model data has changed and if so, updating the view accordingly. It uses a zone.js library to detect changes and run change detection cycles.
+
+#### Change Detection Strategies
+
+Angular provides two change detection strategies:
+
+- Default (ChangeDetectionStrategy.Default)
+- OnPush (ChangeDetectionStrategy.OnPush)
+
+#### Default Strategy
+
+**Description**
+
+- The Default strategy checks every component in the component tree from top to bottom.
+- It runs change detection whenever any asynchronous event (e.g., user input, HTTP request, timers) occurs.
+
+**Use Cases**
+
+- Suitable for applications where the model changes frequently and unpredictably.
+- Easier to implement as it automatically tracks changes in the entire component tree.
+
+#### [OnPush](https://angular.dev/best-practices/skipping-subtrees#using-onpush) Strategy
+
+**Description**
+OnPush change detection instructs Angular to run change detection for a component subtree only when:
+
+- The root component of the subtree receives new inputs as the result of a template binding. Angular compares the current and past value of the input with `==`.
+- Angular handles an event (for example using event binding, output binding, or @HostListener ) in the subtree's root component or any of its children whether they are using OnPush change detection or not.
+
+**Use Cases**
+
+- Suitable for performance optimization in large applications.
+- Useful when the component's data is immutable or when changes are predictable and controlled.
+- Reduces the amount of work Angular has to do during change detection cycles, leading to potential performance gains.
+
+#### When to Use Each Strategy
+
+**Default Strategy**
+
+Use when:
+
+- The application is small to medium-sized.
+- The model changes frequently and unpredictably.
+- You want the simplicity of automatic change detection without manual intervention.
+- You are in the early stages of development and want to avoid premature optimization.
+
+**OnPush Strategy**
+
+Use when:
+
+- The application is large and performance is a concern.
+- You can ensure that the data passed to components is immutable or changes are predictable.
+- You want to optimize performance by reducing the number of change detection cycles.
+- You are using state management libraries like NgRx, which inherently supports immutability and predictable data changes.
+
+#### Summary
+
+**Change Detection Mechanism**: Ensures the view reflects the model's current state.
+**Default Strategy**: Automatically checks the entire component tree; suitable for smaller applications or when changes are frequent and unpredictable.
+**OnPush Strategy**: Optimizes change detection by only checking components when specific conditions are met; suitable for larger applications or when performance is a concern.
+
 </details>
 
 <details>
 <summary>10. How do you handle dynamic components?</summary>
+
+In Angular, dynamic components can be handled using the following approaches:
+
+1. **[Component Factory Resolver](https://angular.dev/api/core/ComponentFactoryResolver?tab=description)**: to create a component factory and then use it to create a dynamic component.
+
+```ts
+import { ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+
+// assume viewContainerRef is a reference to the container where we want to render the dynamic component
+constructor(private componentFactoryResolver: ComponentFactoryResolver, private viewContainerRef: ViewContainerRef) { }
+
+createDynamicComponent() {
+  const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MyDynamicComponent);
+  const componentRef = this.viewContainerRef.createComponent(componentFactory);
+}
+```
+
+2. **Directive with [ViewContainerRef](https://angular.dev/api/core/ViewContainerRef?tab=description)**: creates a directive that injects the ViewContainerRef and uses it to render the dynamic component.
+
+```ts
+import { Directive, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appDynamicComponent]',
+})
+export class DynamicComponentDirective {
+  constructor(private viewContainerRef: ViewContainerRef) {}
+
+  createDynamicComponent() {
+    const componentRef = this.viewContainerRef.createComponent(MyDynamicComponent);
+  }
+}
+```
+
+3. **[Component Outlets](https://angular.dev/api/common/NgComponentOutlet)**: to render dynamic components.
+
+```html
+<ng-container *ngComponentOutlet="MyComponent"></ng-container>
+```
 
 </details>
 
