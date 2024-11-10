@@ -1,6 +1,6 @@
 # Angular interview questions
 
-## General:
+## General
 
 <details>
 <summary>1. What is Angular and what is it used for?</summary>
@@ -8,7 +8,7 @@
 [Angular](https://angular.dev/overview) is a web framework that empowers developers to build fast, reliable applications.
 Maintained by a dedicated team at Google, Angular provides a broad suite of tools, APIs, and libraries to simplify and streamline your development workflow. Angular gives you a solid platform on which to build fast, reliable applications that scale with both the size of your team and the size of your codebase.
 
-#### Key Features of Angular:
+#### Key Features of Angular
 
 - Component-Based Architecture:
 
@@ -66,7 +66,7 @@ Built-in support for internationalizing applications, making it easier to transl
 
 Angular is designed with testing in mind, offering tools and best practices for unit testing (using Jasmine and Karma) and end-to-end testing (using Protractor).
 
-#### Example Use Cases:
+#### Example Use Cases
 
 - Single-Page Applications (SPAs):
 
@@ -107,7 +107,7 @@ export class HelloWorldComponent {
 [The Angular CLI](https://angular.dev/tools/cli) is a command-line interface tool which allows you to scaffold, develop, test, deploy, and maintain Angular applications directly from a command shell.
 Angular CLI is published on npm as the @angular/cli package and includes a binary named ng. Commands invoking ng are using the Angular CLI.
 
-#### Main Features of Angular CLI:
+#### Main Features of Angular CLI
 
 - Project Initialization: `ng new`.
 - Scaffolding: generate components, services, modules, and other Angular constructs using `ng generate` (or `ng g`) command.
@@ -131,7 +131,7 @@ In Angular, a module is a cohesive block of code dedicated to an application dom
 
 Angular code that predates standalone components uses [NgModule](https://angular.dev/guide/components/importing#ngmodules) as a mechanism for importing and using other components. See the full [NgModule guide](https://angular.dev/guide/ngmodules) for details.
 
-#### Role of a Module in an Angular Application:
+#### Role of a Module in an Angular Application
 
 - Organization:
 
@@ -153,7 +153,7 @@ Angular modules support lazy loading, which can improve application performance 
 
 They enable the development of large applications by breaking down the application into smaller, more manageable pieces.
 
-#### Key Properties of `@NgModule`:
+#### Key Properties of `@NgModule`
 
 - declarations:
 
@@ -171,7 +171,7 @@ Specifies the services available to the module.
 
 Lists the root component(s) that Angular should bootstrap when the application starts.
 
-#### Core Module:
+#### Core Module
 
 The root module, often called AppModule, is the entry point of an Angular application:
 
@@ -190,7 +190,7 @@ import { HelloWorldComponent } from './hello-world/hello-world.component';
 export class AppModule {}
 ```
 
-#### Feature Modules:
+#### Feature Modules
 
 In addition to the root module, an Angular application can have multiple feature modules. A feature module is dedicated to a specific application feature or functionality. This helps in organizing the code better and enables lazy loading.
 
@@ -207,7 +207,7 @@ import { FeatureComponent } from './feature/feature.component';
 export class FeatureModule {}
 ```
 
-#### Summary:
+#### Summary
 
 Modules are (were!) fundamental building blocks in Angular applications. They help in organizing the application into cohesive blocks, managing dependencies, enabling lazy loading, and improving maintainability and scalability. By dividing an application into modules, developers can build and maintain large-scale applications more efficiently.
 
@@ -218,7 +218,7 @@ Modules are (were!) fundamental building blocks in Angular applications. They he
 
 Inter-component communication in Angular refers to the methods and techniques used to share data and interact between different components within an application. Angular provides several ways to facilitate this communication:
 
-#### 1. `@Input` and `@Output` Decorators:
+#### 1. `@Input` and `@Output` Decorators
 
 These decorators are used for parent-child communication, where a parent component passes data to a child component and vice versa.
 
@@ -275,7 +275,7 @@ export class ParentComponent {
 }
 ```
 
-#### 2. Services with `Observables`:
+#### 2. Services with `Observables`
 
 Services can be used as a central place to share data between components, especially when the components are not directly related.
 
@@ -336,7 +336,7 @@ export class ComponentB implements OnInit {
 }
 ```
 
-#### 3. `ViewChild` and `ContentChild` Decorators:
+#### 3. `ViewChild` and `ContentChild` Decorators
 
 These decorators allow a parent component to access a child component's properties and methods directly.
 
@@ -400,7 +400,7 @@ export class ParentComponent implements AfterContentInit {
 }
 ```
 
-#### 4. RxJS `Subjects`:
+#### 4. RxJS `Subjects`
 
 Subjects are a type of `Observable` that can multicast to multiple observers. They can be used for broadcasting data to multiple components.
 
@@ -450,7 +450,7 @@ export class ComponentB implements OnInit {
 }
 ```
 
-#### 5. `Signals`:
+#### 5. `Signals`
 
 Signals in Angular can be used to create reactive state objects that emit new values when the state changes. This can be very useful for sharing data between components.
 
@@ -519,7 +519,7 @@ export class ComponentB implements OnInit {
 
 </details>
 
-## Components:
+## Components
 
 <details>
 <summary>1. What are Components in Angular, and how are they the foundation of an application structure?</summary>
@@ -710,7 +710,7 @@ Render callbacks do not run during server-side rendering or during build-time pr
 
 When using `afterRender` or `afterNextRender`, you can optionally split the work into phases. The phase gives you control over the sequencing of DOM operations, letting you sequence _write_ operations before _read_ operations in order to minimize [layout thrashing](https://web.dev/avoid-large-complex-layouts-and-layout-thrashing). In order to communicate across phases, a phase function may return a result value that can be accessed in the next phase.
 
-##### There are four phases that run in the following order:
+##### There are four phases that run in the following order
 
 1. `earlyRead` - Use this phase to read any layout-affecting DOM properties and styles that are strictly necessary for subsequent calculation. Avoid this phase if possible, preferring the write and read phases.
 2. `mixedReadWrite` - Default phase. Use for any operations need to both read and write layout-affecting properties and styles. Avoid this phase if possible, preferring the explicit write and read phases.
@@ -1365,7 +1365,7 @@ Use when:
 
 In Angular, dynamic components can be handled using the following approaches:
 
-1. **[Component Factory Resolver](https://angular.dev/api/core/ComponentFactoryResolver?tab=description)**: to create a component factory and then use it to create a dynamic component.
+1. **[Component Factory Resolver](https://angular.dev/api/core/ComponentFactoryResolver?tab=description)** (Deprecated): to create a component factory and then use it to create a dynamic component.
 
 ```ts
 import { ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
@@ -1404,10 +1404,10 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Directives:
+## Directives
 
 <details>
-<summary>1. What are `Directives` in Angular, and what are they used for?</summary>
+<summary>1. What are Directives in Angular, and what are they used for?</summary>
 
 </details>
 
@@ -1417,41 +1417,41 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>3. How do you create and use a custom directive? Explain the use of the `@Directive` decorator.</summary>
+<summary>3. How do you create and use a custom directive? Explain the use of the @Directive decorator.</summary>
 
 </details>
 
 <details>
-<summary>4. Explain **ngIf** and **ngFor** and their usage.</summary>
+<summary>4. Explain ngIf and ngFor and their usage.</summary>
 
 </details>
 
 <details>
-<summary>5. What is the difference between **\*ngIf** and **[hidden]**?</summary>
+<summary>5. What is the difference between \*ngIf and [hidden]?</summary>
 
 </details>
 
 <details>
-<summary>6. What is the purpose of **ngSwitch**, **ngSwitchCase**, and **ngSwitchDefault**, and how do you use them?</summary>
+<summary>6. What is the purpose of ngSwitch, ngSwitchCase, and ngSwitchDefault, and how do you use them?</summary>
 
 </details>
 
 <details>
-<summary>7. What is the difference between **ngStyle** and **ngClass**?</summary>
+<summary>7. What is the difference between ngStyle and ngClass?</summary>
 
 </details>
 
 <details>
-<summary>8. What is **ngContainer** and what is it used for? Provide an example.</summary>
+<summary>8. What is ngContainer and what is it used for? Provide an example.</summary>
 
 </details>
 
 <details>
-<summary>9. How do you create custom structural directives using **ng-template**?</summary>
+<summary>9. How do you create custom structural directives using ng-template?</summary>
 
 </details>
 
-## Pipe:
+## Pipe
 
 <details>
 <summary>1. What is a `Pipe`, and what is its purpose in Angular?</summary>
@@ -1459,7 +1459,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>2. Can you provide examples of some built-in pipes (e.g., **date**, **uppercase**, **lowercase**)?</summary>
+<summary>2. Can you provide examples of some built-in pipes (e.g., date, uppercase, lowercase)?</summary>
 
 </details>
 
@@ -1493,7 +1493,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Routing:
+## Routing
 
 <details>
 <summary>1. What is `Routing` in Angular, and what is it used for?</summary>
@@ -1501,7 +1501,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>2. How do you configure a basic routing system using **RouterModule** and **router-outlet**?</summary>
+<summary>2. How do you configure a basic routing system using RouterModule and router-outlet?</summary>
 
 </details>
 
@@ -1521,12 +1521,12 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>6. How do you use **Route Guards** (e.g., **CanActivate** and **CanDeactivate**) to protect routes?</summary>
+<summary>6. How do you use Route Guards (e.g., CanActivate and CanDeactivate) to protect routes?</summary>
 
 </details>
 
 <details>
-<summary>7. What is **ActivatedRoute**, and how do you apply it to get information about the current route?</summary>
+<summary>7. What is ActivatedRoute, and how do you apply it to get information about the current route?</summary>
 
 </details>
 
@@ -1535,7 +1535,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## RxJS:
+## RxJS
 
 <details>
 <summary>1. Define the concept of `RxJS` and its usage in Angular.</summary>
@@ -1568,7 +1568,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>7. How would you explain the concepts of **_Hot_** and **_Cold_** Observables?</summary>
+<summary>7. How would you explain the concepts of _Hot_ and _Cold_ Observables?</summary>
 
 </details>
 
@@ -1587,7 +1587,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Dependency Injection:
+## Dependency Injection
 
 <details>
 <summary>1. What is `Dependency Injection`, and what are its objectives in Angular?</summary>
@@ -1605,7 +1605,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>4. What are **useClass**, **useValue**, and **useFactory**? How are they used when creating providers?</summary>
+<summary>4. What are useClass, useValue, and useFactory? How are they used when creating providers?</summary>
 
 </details>
 
@@ -1620,7 +1620,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>7. How do you use **@Optional**, **@Self**, and **@SkipSelf** decorators to control dependency injection and their handling?</summary>
+<summary>7. How do you use @Optional, @Self, and @SkipSelf decorators to control dependency injection and their handling?</summary>
 
 </details>
 
@@ -1644,7 +1644,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Forms:
+## Forms
 
 <details>
 <summary>1. What is the difference between `Template-driven Forms` and `Reactive Forms`?</summary>
@@ -1652,7 +1652,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>2. What are **FormControl**, **FormGroup**, and **FormArray** in the context of Reactive Forms?</summary>
+<summary>2. What are FormControl, FormGroup, and FormArray in the context of Reactive Forms?</summary>
 
 </details>
 
@@ -1691,7 +1691,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Lazy Loading:
+## Lazy Loading
 
 <details>
 <summary>1. What is `Lazy loading`, and what is its purpose in Angular applications?</summary>
@@ -1714,7 +1714,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>5. What is Preload strategy, and what are the main strategies used for preloading modules (**NoPreloading** or **PreloadAllModules**)?</summary>
+<summary>5. What is Preload strategy, and what are the main strategies used for preloading modules (NoPreloading or PreloadAllModules)?</summary>
 
 </details>
 
@@ -1733,7 +1733,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Modules:
+## Modules
 
 <details>
 <summary>1. What is a `Module` in Angular, and what role does it play in an application?</summary>
@@ -1750,7 +1750,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## HTTP:
+## HTTP
 
 <details>
 <summary>1. What is `HttpClientModule`, and why is it important in Angular applications?</summary>
@@ -1758,7 +1758,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>2. How can you make HTTP requests using Angular's **HttpClient**?</summary>
+<summary>2. How can you make HTTP requests using Angular's HttpClient?</summary>
 
 </details>
 
@@ -1778,7 +1778,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>6. What is the purpose of **HttpInterceptor** in Angular, and how does it work?</summary>
+<summary>6. What is the purpose of HttpInterceptor in Angular, and how does it work?</summary>
 
 </details>
 
@@ -1792,7 +1792,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Tests (Testing):
+## Tests (Testing)
 
 <details>
 <summary>1. What types of `Testing` does Angular support (e.g., unit tests, integration tests, e2e tests)?</summary>
@@ -1800,17 +1800,17 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>2. What are the main tools and libraries used by Angular for testing (**Jasmine**, **Karma**, and **Protractor**)?</summary>
+<summary>2. What are the main tools and libraries used by Angular for testing (Jasmine, Karma, and Protractor)?</summary>
 
 </details>
 
 <details>
-<summary>3. What is **TestBed**, and how is it used to set up a testing environment?</summary>
+<summary>3. What is TestBed, and how is it used to set up a testing environment?</summary>
 
 </details>
 
 <details>
-<summary>4. How do you test Angular components using **ComponentFixture** and **DebugElement**?</summary>
+<summary>4. How do you test Angular components using ComponentFixture and DebugElement?</summary>
 
 </details>
 
@@ -1830,7 +1830,7 @@ export class DynamicComponentDirective {
 </details>
 
 <details>
-<summary>8. What are async, **fakeAsync**, and **tick**, and how are they used when testing asynchronous code?</summary>
+<summary>8. What are async, fakeAsync, and tick, and how are they used when testing asynchronous code?</summary>
 
 </details>
 
@@ -1839,7 +1839,7 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Signals:
+## Signals
 
 <details>
 <summary>1. What are Signals?</summary>
@@ -1886,15 +1886,55 @@ export class DynamicComponentDirective {
 
 </details>
 
-## Angular 16, 17, 18 features:
+## Angular 16, 17, 18 features
 
 <details>
 <summary>1. What's new in Angular 16, 17, and 18 versions?</summary>
 
+**[16](https://blog.angular.dev/angular-v16-is-here-4d7a28ec680d)**
+
+#### Angular 16 key highlights
+
+**Reactivity**
+
+- Angular Signals: A new reactivity model that brings better performance and a simpler mental model for reactivity.
+- Computed Properties: Enables computed properties without the penalty of recomputation in each change detection cycle.
+- RxJS Interoperability: Enables better interoperability with RxJS by outlining a plan to introduce reactive inputs.
+
+**Server-Side Rendering**
+
+- Full App Non-Destructive Hydration: A new feature that enables full app non-destructive hydration, which improves performance and reduces content flickering.
+- Improved Tooling: Updated ng add schematics for Angular Universal and introduced support for stricter Content Security Policy for inline styles.
+- provideZoneChangeDetection
+
+**Tooling**
+
+- Standalone APIs: Encourages wider adoption of standalone APIs by providing migration schematics and a standalone migration guide.
+- esbuild-based Build System: Enters developer preview, which showed over 72% improvement in cold production builds (`ng serve` is now using Vite for the development server).
+- Jest Support: Introduces experimental Jest support for unit testing.
+- Autocomplete imports in templates
+- Support for TypeScript 5.0, with support for ECMAScript decorators, etc.
+
+**Improving Developer Experience**
+
+- Required inputs
+- Passing router data as component inputs
+- CSP support for inline-styles: Nonce: using the `ngCspNonce` attribute or through the `CSP_NONCE` injection token.
+- Flexible ngOnDestroy: The `DestroyRef` can be injected anywhere within an injection context, including outside of your component — in such case the `onDestroy` hook is executed when a corresponding injector is destroyed.
+- Self-closing tags
+
+```html
+<super-duper-long-component-name [prop]="someVar" />
+```
+
+**[17]()**
+
+#### Angular 17 key highlights
+
 </details>
 
 <details>
-<summary>2. Describe the new features **@if**, **@for**, **@switch**, **@defer**.</summary>
+<summary>2. Describe the new features @if, @for, @switch, @defer.</summary>
 
 </details>
 
